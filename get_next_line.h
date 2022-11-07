@@ -6,14 +6,14 @@
 /*   By: mohtakra <mohtakra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 18:30:14 by mohtakra          #+#    #+#             */
-/*   Updated: 2022/11/05 17:22:14 by mohtakra         ###   ########.fr       */
+/*   Updated: 2022/11/06 22:45:21 by mohtakra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
-#ifndef BUFFER_SIZE
-# define BUFFER_SIZE  10
-#endif
+// #ifndef BUFFER_SIZE
+// # define BUFFER_SIZE  10
+// #endif
 
 #ifndef GET_NEXT_LINE
 # define GET_NEXT_LINE
