@@ -6,7 +6,7 @@
 /*   By: mohtakra <mohtakra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 18:37:39 by mohtakra          #+#    #+#             */
-/*   Updated: 2022/11/07 18:19:26 by mohtakra         ###   ########.fr       */
+/*   Updated: 2022/11/07 23:17:02 by mohtakra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	int		i;
 
 	i = 0;
-	if (!s1 && !s2)
+	if ((!s1 && !s2) || (ft_strlen(s1) == 0 && ft_strlen(s2) == 0))
 		return (NULL);
 	if (s1 && !s2)
 		return (ft_strdup(s1));
@@ -59,13 +59,13 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		i++;
 	if (s2[i] == '\n')
 		i++;
-	str = (char *)malloc(ft_strlen(s1) +  i + 1);
+	str = (char *)malloc(ft_strlen(s1) + i + 1);
 	if (!str)
 		return (NULL);
 	i = 0;
 	while (s1 && *s1)
 		str[i++] = *s1++;
-	while (*s2 && *s2 != '\n')
+	while (s2 && *s2 && *s2 != '\n')
 		str[i++] = *s2++;
 	if (*s2 == '\n')
 		str[i++] = *s2;
@@ -76,12 +76,14 @@ char	*ft_strjoin(char const *s1, char const *s2)
 int	check_for_char(char *str, char c)
 {
 	if (str)
+	{
 		while (*str)
 		{
 			if (*str == c)
 				return (1);
 			str++;
 		}
+	}
 	return (0);
 }
 
