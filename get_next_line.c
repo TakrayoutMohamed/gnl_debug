@@ -6,7 +6,7 @@
 /*   By: mohtakra <mohtakra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 18:29:34 by mohtakra          #+#    #+#             */
-/*   Updated: 2022/11/08 00:19:53 by mohtakra         ###   ########.fr       */
+/*   Updated: 2022/11/08 04:02:41 by mohtakra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 void	rest_from_last(char *str, char *buffer)
 {
+	char	*tmp;
+
+	tmp = str;
 	while (*buffer && *buffer != '\n')
 		buffer++;
 	buffer++;
@@ -24,56 +27,67 @@ void	rest_from_last(char *str, char *buffer)
 		str++;
 	}
 	*str = '\0';
+	str = tmp;
 }
 
-char	*get_next_line(int fd)
+void	allocat_and_free(char *strtofill, char *strtofree)
 {
-	char		buffer[BUFFER_SIZE];
-	static char		*resultline;
-	static char	str[BUFFER_SIZE];
-	int			read_file;
+	int		i;
 
-	resultline = NULL;
-	read_file = 1;
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	if (read_file && check_for_char(str, '\n'))
+	i = 0;
+	if (!strtofree)
+		return ;
+	strtofill = (char *) malloc(sizeof(char) * ft_strlen(strtofree) + 1);
+	if (!strtofill)
+		return ;
+	while (*strtofree)
 	{
-		resultline = ft_strjoin(resultline, str);
-		rest_from_last(str, str);
-		return (resultline);
-	}	
-	else if (read_file )
-		resultline = ft_strjoin(resultline, str);
-	while (read_file)
+		strtofill[i] = strtofree[i];
+		i++;
+	}
+	strtofill[i] = '\0';
+	if (ft_strlen(strtofree) > 0)
+		free(strtofree);
+}
+
+char	*get_last_result_and_rest(char *line, char *str, int *readfile, int *fd)
+{
+	char	buffer[BUFFER_SIZE];
+
+	if (check_for_char(str, '\n'))
 	{
-		// printf("here");
-		read_file = read(fd, buffer, BUFFER_SIZE);
-		if (read_file == -1)
+		line = ft_strjoin(line, str);
+		return (rest_from_last(str, str), line);
+	}
+	else
+		line = ft_strjoin(line, str);
+	while (*readfile)
+	{
+		*readfile = read(*fd, buffer, BUFFER_SIZE);
+		if (*readfile == -1)
 			return (NULL);
-		ft_strlcpy(str, buffer, read_file + 1);
-		resultline = ft_strjoin(resultline, str);
+		ft_strlcpy(str, buffer, *readfile + 1);
+		line = ft_strjoin(line, str);
 		if (check_for_char(str, '\n'))
 		{
 			rest_from_last(str, str);
 			break ;
 		}
 	}
-	return (resultline);
+	return (line);
 }
-// int main()
-// {
-// char str[] = "/Users/mohtakra/Desktop/RepoGetnextline/gnlTester/files/alternate_line_nl_with_nl";
-//     int fd = open(str,O_RDONLY, 777);
-//     printf("%s",get_next_line(fd));
-//     printf("%s",get_next_line(fd));
-//     printf("%s",get_next_line(fd));
-//     printf("%s",get_next_line(fd));
-//     printf("%s",get_next_line(fd));
-//     printf("%s",get_next_line(fd));
-//     printf("%s",get_next_line(fd));
-//     printf("%s",get_next_line(fd));
-//     printf("%s",get_next_line(fd));
-//     printf("%s",get_next_line(fd));
-// 	close(fd);
-// }
+
+char	*get_next_line(int fd)
+{
+	static char		*result;
+	char		*resultline;
+	static char	str[BUFFER_SIZE];
+	int			readfile;
+
+	result = NULL;
+	resultline = NULL;
+	readfile = 1;
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	return (get_last_result_and_rest(result, str, &readfile, &fd));
+}

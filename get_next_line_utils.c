@@ -6,7 +6,7 @@
 /*   By: mohtakra <mohtakra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 18:37:39 by mohtakra          #+#    #+#             */
-/*   Updated: 2022/11/07 23:17:02 by mohtakra         ###   ########.fr       */
+/*   Updated: 2022/11/08 03:34:57 by mohtakra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if ((!s1 && !s2) || (ft_strlen(s1) == 0 && ft_strlen(s2) == 0))
 		return (NULL);
 	if (s1 && !s2)
-		return (ft_strdup(s1));
+		return (ft_strjoin(s1,""));
 	while (s2[i] && s2[i] != '\n')
 		i++;
 	if (s2[i] == '\n')
