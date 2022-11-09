@@ -6,7 +6,7 @@
 /*   By: mohtakra <mohtakra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 18:30:14 by mohtakra          #+#    #+#             */
-/*   Updated: 2022/11/07 20:46:03 by mohtakra         ###   ########.fr       */
+/*   Updated: 2022/11/09 20:54:18 by mohtakra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <string.h>
 
 char	*get_next_line(int fd);
 /*utile files*/

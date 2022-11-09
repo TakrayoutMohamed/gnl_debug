@@ -6,20 +6,22 @@
 /*   By: mohtakra <mohtakra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 18:37:39 by mohtakra          #+#    #+#             */
-/*   Updated: 2022/11/08 03:34:57 by mohtakra         ###   ########.fr       */
+/*   Updated: 2022/11/09 20:59:24 by mohtakra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen_nl(const char *s)
 {
 	size_t	i;
 
 	i = 0;
 	if (!s)
 		return (0);
-	while (s[i])
+	while (s[i] && s[i] != '\n')
+		i++;
+	if (s[i] == '\n')
 		i++;
 	return (i);
 }
@@ -32,16 +34,23 @@ char	*ft_strdup(const char *s)
 	i = 0;
 	if (!s)
 		return (NULL);
-	str = (char *) malloc(sizeof(char) * ft_strlen(s) + 1);
+	str = (char *) malloc(sizeof(char) * ft_strlen_nl(s) + 1);
 	if (!str)
 		return (NULL);
-	while (*s)
+	while (*s && *s != '\n')
 	{
 		str[i] = *s;
 		s++;
 		i++;
 	}
-	str[i] = 0;
+	if (*s == '\n')
+	{
+		str[i] = *s;
+		i++;
+	}
+	str[i] = '\0';
+	// printf("str : =%s=%zu",str,strlen(str));
+	// 	exit(0);
 	return (str);
 }
 
@@ -50,26 +59,25 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	char	*str;
 	int		i;
 
-	i = 0;
-	if ((!s1 && !s2) || (ft_strlen(s1) == 0 && ft_strlen(s2) == 0))
+	if ((!s1 && !s2) || (ft_strlen_nl(s1) == 0 && ft_strlen_nl(s2) == 0))
 		return (NULL);
-	if (s1 && !s2)
-		return (ft_strjoin(s1,""));
-	while (s2[i] && s2[i] != '\n')
-		i++;
-	if (s2[i] == '\n')
-		i++;
-	str = (char *)malloc(ft_strlen(s1) + i + 1);
+	if (!s1 && s2)
+		return (ft_strdup(s2));
+	i = 0;
+	str = (char *)malloc(ft_strlen_nl(s1) + ft_strlen_nl(s2) + 1);
 	if (!str)
 		return (NULL);
-	i = 0;
-	while (s1 && *s1)
-		str[i++] = *s1++;
-	while (s2 && *s2 && *s2 != '\n')
+	while (s1[i])
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	while (*s2 && *s2 != '\n')
 		str[i++] = *s2++;
 	if (*s2 == '\n')
 		str[i++] = *s2;
 	str[i] = '\0';
+	free((void *)s1);
 	return (str);
 }
 
@@ -92,7 +100,7 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 	size_t	i;
 	size_t	src_size;
 
-	src_size = ft_strlen(src);
+	src_size = ft_strlen_nl(src);
 	i = 0;
 	if (dstsize != 0)
 	{

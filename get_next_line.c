@@ -6,7 +6,7 @@
 /*   By: mohtakra <mohtakra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 18:29:34 by mohtakra          #+#    #+#             */
-/*   Updated: 2022/11/08 04:02:41 by mohtakra         ###   ########.fr       */
+/*   Updated: 2022/11/09 21:49:44 by mohtakra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,64 +30,57 @@ void	rest_from_last(char *str, char *buffer)
 	str = tmp;
 }
 
-void	allocat_and_free(char *strtofill, char *strtofree)
+char	*get_last_result_and_rest(char *line, char *rest, char *buffer, int fd)
 {
-	int		i;
+	int		readedbuffer = 1;
 
-	i = 0;
-	if (!strtofree)
-		return ;
-	strtofill = (char *) malloc(sizeof(char) * ft_strlen(strtofree) + 1);
-	if (!strtofill)
-		return ;
-	while (*strtofree)
+	readedbuffer = 1;
+	if (check_for_char(rest, '\n'))
 	{
-		strtofill[i] = strtofree[i];
-		i++;
-	}
-	strtofill[i] = '\0';
-	if (ft_strlen(strtofree) > 0)
-		free(strtofree);
-}
-
-char	*get_last_result_and_rest(char *line, char *str, int *readfile, int *fd)
-{
-	char	buffer[BUFFER_SIZE];
-
-	if (check_for_char(str, '\n'))
-	{
-		line = ft_strjoin(line, str);
-		return (rest_from_last(str, str), line);
+		line = ft_strjoin(line, rest);
+		return (free(buffer), rest_from_last(rest, rest), line);
 	}
 	else
-		line = ft_strjoin(line, str);
-	while (*readfile)
+		line = ft_strjoin(line, rest);
+		// printf("readedbuffer = **%d**",readedbuffer);
+	while (readedbuffer)
 	{
-		*readfile = read(*fd, buffer, BUFFER_SIZE);
-		if (*readfile == -1)
-			return (NULL);
-		ft_strlcpy(str, buffer, *readfile + 1);
-		line = ft_strjoin(line, str);
-		if (check_for_char(str, '\n'))
+		readedbuffer = read(fd, buffer, BUFFER_SIZE);
+		if (readedbuffer == -1)
+			return (free(buffer), NULL);
+		ft_strlcpy(rest, buffer, readedbuffer + 1);
+		line = ft_strjoin(line, rest);
+		if (check_for_char(rest, '\n'))
 		{
-			rest_from_last(str, str);
+			rest_from_last(rest, rest);
 			break ;
-		}
+		}	
 	}
-	return (line);
+	printf("[%s]\n", line);
+	// printf("buffer1 : =%s=%zu",buffer,strlen(buffer));
+	// exit(0);
+	return (free(buffer),line);
 }
 
 char	*get_next_line(int fd)
 {
-	static char		*result;
-	char		*resultline;
-	static char	str[BUFFER_SIZE];
-	int			readfile;
+	char		*result;
+	static char	*rest;
+	char	*buffer;
 
+	buffer =(char *)malloc(BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	buffer[0] = '\0';
 	result = NULL;
-	resultline = NULL;
-	readfile = 1;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	return (get_last_result_and_rest(result, str, &readfile, &fd));
+	if (!rest)
+	{
+		rest = (char *)malloc(BUFFER_SIZE + 1);
+		if (!rest)
+			return (NULL);
+		rest[0] = '\0';
+	}
+	return (get_last_result_and_rest(result, rest, buffer, fd));
 }
