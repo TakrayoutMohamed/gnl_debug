@@ -6,7 +6,7 @@
 /*   By: mohtakra <mohtakra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 18:29:34 by mohtakra          #+#    #+#             */
-/*   Updated: 2022/11/09 21:49:44 by mohtakra         ###   ########.fr       */
+/*   Updated: 2022/11/10 02:01:17 by mohtakra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,25 @@
 
 void	rest_from_last(char *str, char *buffer)
 {
-	char	*tmp;
+	int	i;
+	int	j;
 
-	tmp = str;
-	while (*buffer && *buffer != '\n')
-		buffer++;
-	buffer++;
-	while (*buffer)
+	i = 0;
+	j = 0;
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
+	i++;
+	while (buffer[i])
 	{
-		*str = *buffer;
-		buffer++;
-		str++;
+		str[j] = buffer[i];
+		i++;
+		j++;
 	}
-	*str = '\0';
-	str = tmp;
+	str[j] = '\0';
 }
 
-char	*get_last_result_and_rest(char *line, char *rest, char *buffer, int fd)
+char	*get_line(char *line, char *rest, char *buffer, int fd, int *readedbuffer)
 {
-	int		readedbuffer = 1;
-
-	readedbuffer = 1;
 	if (check_for_char(rest, '\n'))
 	{
 		line = ft_strjoin(line, rest);
@@ -42,23 +40,21 @@ char	*get_last_result_and_rest(char *line, char *rest, char *buffer, int fd)
 	}
 	else
 		line = ft_strjoin(line, rest);
-		// printf("readedbuffer = **%d**",readedbuffer);
-	while (readedbuffer)
+	while (*readedbuffer)
 	{
-		readedbuffer = read(fd, buffer, BUFFER_SIZE);
-		if (readedbuffer == -1)
-			return (free(buffer), NULL);
-		ft_strlcpy(rest, buffer, readedbuffer + 1);
+		*readedbuffer = read(fd, buffer, BUFFER_SIZE);
+		if (*readedbuffer == -1)
+			return (free(buffer), free(rest), NULL);
+		ft_strlcpy(rest, buffer, *readedbuffer + 1);
 		line = ft_strjoin(line, rest);
 		if (check_for_char(rest, '\n'))
 		{
 			rest_from_last(rest, rest);
 			break ;
-		}	
+		}
+		else if (*readedbuffer == 0)
+			return (free(buffer), free(rest), line);
 	}
-	printf("[%s]\n", line);
-	// printf("buffer1 : =%s=%zu",buffer,strlen(buffer));
-	// exit(0);
 	return (free(buffer),line);
 }
 
@@ -66,9 +62,10 @@ char	*get_next_line(int fd)
 {
 	char		*result;
 	static char	*rest;
-	char	*buffer;
+	char		*buffer;
+	static int	readedbuffer;
 
-	buffer =(char *)malloc(BUFFER_SIZE + 1);
+	buffer =(char *)malloc(BUFFER_SIZE);
 	if (!buffer)
 		return (NULL);
 	buffer[0] = '\0';
@@ -77,10 +74,12 @@ char	*get_next_line(int fd)
 		return (NULL);
 	if (!rest)
 	{
-		rest = (char *)malloc(BUFFER_SIZE + 1);
+		readedbuffer = 1;
+		rest = (char *)malloc(BUFFER_SIZE);
 		if (!rest)
-			return (NULL);
+			return (free(buffer), NULL);
 		rest[0] = '\0';
 	}
-	return (get_last_result_and_rest(result, rest, buffer, fd));
+	
+	return (get_line(result, rest, buffer, fd, &readedbuffer));
 }
