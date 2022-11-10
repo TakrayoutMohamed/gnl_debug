@@ -6,7 +6,7 @@
 /*   By: mohtakra <mohtakra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 18:29:34 by mohtakra          #+#    #+#             */
-/*   Updated: 2022/11/10 02:01:17 by mohtakra         ###   ########.fr       */
+/*   Updated: 2022/11/10 02:58:17 by mohtakra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,11 @@ void	rest_from_last(char *str, char *buffer)
 	str[j] = '\0';
 }
 
-char	*get_line(char *line, char *rest, char *buffer, int fd, int *readedbuffer)
+char	*get_line(char *rest, char *buffer, int fd, int *readbuffer)
 {
+	char	*line;
+
+	line = NULL;
 	if (check_for_char(rest, '\n'))
 	{
 		line = ft_strjoin(line, rest);
@@ -40,46 +43,41 @@ char	*get_line(char *line, char *rest, char *buffer, int fd, int *readedbuffer)
 	}
 	else
 		line = ft_strjoin(line, rest);
-	while (*readedbuffer)
+	while (*readbuffer)
 	{
-		*readedbuffer = read(fd, buffer, BUFFER_SIZE);
-		if (*readedbuffer == -1)
-			return (free(buffer), free(rest), NULL);
-		ft_strlcpy(rest, buffer, *readedbuffer + 1);
+		*readbuffer = read(fd, buffer, BUFFER_SIZE);
+		ft_strlcpy(rest, buffer, *readbuffer + 1);
 		line = ft_strjoin(line, rest);
 		if (check_for_char(rest, '\n'))
 		{
 			rest_from_last(rest, rest);
 			break ;
 		}
-		else if (*readedbuffer == 0)
+		else if (*readbuffer == 0 || *readbuffer == -1)
 			return (free(buffer), free(rest), line);
 	}
-	return (free(buffer),line);
+	return (free(buffer), line);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*result;
 	static char	*rest;
 	char		*buffer;
-	static int	readedbuffer;
+	static int	readbuffer;
 
-	buffer =(char *)malloc(BUFFER_SIZE);
+	buffer = (char *)malloc(BUFFER_SIZE);
 	if (!buffer)
 		return (NULL);
 	buffer[0] = '\0';
-	result = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!rest)
 	{
-		readedbuffer = 1;
+		readbuffer = 1;
 		rest = (char *)malloc(BUFFER_SIZE);
 		if (!rest)
 			return (free(buffer), NULL);
 		rest[0] = '\0';
 	}
-	
-	return (get_line(result, rest, buffer, fd, &readedbuffer));
+	return (get_line(rest, buffer, fd, &readbuffer));
 }

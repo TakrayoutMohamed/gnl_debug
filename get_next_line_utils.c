@@ -6,7 +6,7 @@
 /*   By: mohtakra <mohtakra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 18:37:39 by mohtakra          #+#    #+#             */
-/*   Updated: 2022/11/10 01:19:19 by mohtakra         ###   ########.fr       */
+/*   Updated: 2022/11/10 02:52:04 by mohtakra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,6 @@ char	*ft_strdup(const char *s)
 		i++;
 	}
 	str[i] = '\0';
-	// printf("str : =%s=%zu",str,strlen(str));
-	// 	exit(0);
 	return (str);
 }
 
@@ -100,6 +98,8 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 	size_t	i;
 	size_t	src_size;
 
+	if (!dst || !src)
+		return (0);
 	src_size = ft_strlen_nl(src);
 	i = 0;
 	if (dstsize != 0)
