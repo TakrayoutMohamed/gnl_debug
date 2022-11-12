@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mohtakra <mohtakra@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/04 18:30:14 by mohtakra          #+#    #+#             */
-/*   Updated: 2022/11/10 01:24:19 by mohtakra         ###   ########.fr       */
+/*   Created: 2022/11/10 15:51:00 by mohtakra          #+#    #+#             */
+/*   Updated: 2022/11/11 17:41:53 by mohtakra         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,13 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
-# include <string.h>
 
 char	*get_next_line(int fd);
 /*utile files*/
-size_t	ft_strlen_nl(const char *s);
+size_t	ft_strlen(const char *s);
 char	*ft_strdup(const char *s);
 char	*ft_strjoin(char const *s1, char const *s2);
-int		check_for_char(char *str, char c);
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+int		ft_strchr(char *str, char c);
 
 #endif
